@@ -18,7 +18,7 @@
 }
 
 body {
-  color: var(--foreground);
+  color: #ef983f;
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Poppins, sans-serif;
 }
