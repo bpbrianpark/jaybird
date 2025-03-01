@@ -5,7 +5,22 @@ import PhotoCarousel from "./components/PhotoCarousel";
 export default function Home() {
   return (
     <div style={{ textAlign: "left"}}>
+      <div className="flex items-left justify-between w-full max-w-full mx-auto mt-5">
+        <div className="flex-1">
       <TypeWriter />
+      </div>
+      <div className="px-10">
+      <div className="w-[250px] h-[250px] flex items-right justify-center border-4 border-orange-500 rounded-full shadow-lg overflow-hidden">
+          <Image
+            src="/jasonpark.png"
+            alt="Logo"
+            width={250}
+            height={250}
+            className="rounded-full"
+          />
+        </div>
+      </div>
+      </div>
       <div 
         style={{
           maxWidth: "1200px",
