@@ -8,12 +8,14 @@ export default function Home() {
       <TypeWriter />
       <div 
         style={{
-          maxWidth: "706px",
+          maxWidth: "1200px",
           borderRadius: "10px",
         }}
       >
-        <p style={{ fontSize: "18px", lineHeight: "1.5" }}>
-          Jason Park is a nature photographer with a natural .
+        <p style={{ fontSize: "20px", lineHeight: "1.5", margin: "50px"}}>
+          Jason Park is a photographer who can capture the perfect moment in a single snapshot. 
+          With everything from eagles soaring through the sky to bears hunting for their next meal, he's always on the hunt for the perfect shot.
+
         </p>
       </div>
       <PhotoCarousel />

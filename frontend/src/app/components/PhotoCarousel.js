@@ -7,10 +7,11 @@ const images = [
   "owl.png",
   "photo2.jpg",
   "photo3.jpg",
-  "photo4.jpg"
+  "photo4.jpg",
+  "photo5.jpg"
 ];
 
-export default function GalleryCarousel() {
+export default function PhotoCarousel() {
   const [index, setIndex] = useState(0);
 
   const prevImage = () => {
@@ -41,14 +42,14 @@ export default function GalleryCarousel() {
           );
         })}
       </div>
-      <div className="flex items-center gap-10">
+      <div className="flex items-center gap-30">
         <button
           onClick={prevImage}
           className="p-1 bg-[#ef983f] rounded-full text-white hover:bg-orange-600"
         >
           <ChevronLeft />
         </button>
-        <span className="text-lg font-regular text-[#ef983f]">Highlights</span>
+        <span className="text-lg font-regular text-[#ef983f] font-size-100">Gallery</span>
         <button
           onClick={nextImage}
           className="p-1 bg-[#ef983f] rounded-full text-white hover:bg-orange-600"
