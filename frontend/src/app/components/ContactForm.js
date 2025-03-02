@@ -2,10 +2,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import NavItem from "./NavItem";
+import { useState } from "react";
 
 const ContactForm = () => {
+    const [loading, setLoading] = useState(false);
     async function handleSubmit(event) {
         event.preventDefault();
+        setLoading(true);
         
         const data = {
             name: String(event.target.name.value),
@@ -23,10 +26,16 @@ const ContactForm = () => {
 
     if (response.ok) {
         console.log("Message sent successfully");
+        setLoading(false);
+        event.target.name.value= "";
+        event.target.email.value ="";
+        event.target.message.value ="";
     }
     if (!response.ok) {
         console.log("Error sending message");
+        setLoading(false);
     }
+}
 
   return (
     <form onSubmit={handleSubmit}>
@@ -63,7 +72,9 @@ const ContactForm = () => {
             placeholder="Type message here." 
             className="w-full p-4 bg-gray-50 border border-gray-110"></textarea>
         </div>
-        <button type="submit" className="px-4 py-2 w-24 bg-gray-700 text-white font-medium">Submit</button>
+        <button type="submit" 
+        disabled={loading}
+        className="px-4 py-2 w-24 disabled:bg-gray-100 disabled:text-gray-100 bg-gray-700 text-white font-medium">Submit</button>
     </form>
   ); 
 };
