@@ -38,43 +38,47 @@ const ContactForm = () => {
 }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="text-left px-10">
         <div className="w-full flex flex-col my-4">
-            <label className="font-bold text-gray-800" htmlFor="name">Name</label>
+            <label className="font-regular text-[#ef983f] text-left" htmlFor="name">Name</label>
             <input type="text" 
             minLength={3}
             maxLength={55}
+            placeholder="Enter name here"
             required
-            className="p-4 bg-gray-50 border border-gray-110" 
+            className="p-4 bg-gray-50 border border-gray-110 rounded-lg" 
             id="name" 
             autoComplete="off"/>
         </div>
 
         <div className="w-full flex flex-col my-4">
-            <label className="font-bold text-gray-800" htmlFor="email">Email</label>
+            <label className="font-regular text-[#ef983f] text-left" htmlFor="email">Email</label>
             <input 
             type="email"
             minLength={5}
             maxLength={150} 
+            placeholder="Enter email here"
             required
-            className="p-4 bg-gray-50 border border-gray-110" 
+            className="p-4 bg-gray-50 border border-gray-110 rounded-lg" 
             autoComplete="off" 
             id="email"/>
         </div>
         <div>
-            <label className="font-bold text-gray-800" htmlFor="email">Message</label>
+            <label className="font-regular text-[#ef983f] text-left" htmlFor="email">Message</label>
             <textarea 
             rows={4} 
             name="message" 
             required 
             minLength={10} 
             maxLength={500} 
-            placeholder="Type message here." 
-            className="w-full p-4 bg-gray-50 border border-gray-110"></textarea>
+            placeholder="Type message here" 
+            className="w-full p-4 bg-gray-50 border border-gray-110 rounded-lg"></textarea>
         </div>
+        <div className="flex justify-center">
         <button type="submit" 
         disabled={loading}
-        className="px-4 py-2 w-24 disabled:bg-gray-100 disabled:text-gray-100 bg-gray-700 text-white font-medium">Submit</button>
+        className="px-4 py-4 w-24 mt-4 disabled:bg-gray-100 disabled:text-gray-100 bg-[#ef983f] text-white font-medium rounded-2xl">Submit</button>
+        </div>
     </form>
   ); 
 };
