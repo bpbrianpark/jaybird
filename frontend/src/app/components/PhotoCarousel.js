@@ -23,21 +23,25 @@ export default function PhotoCarousel() {
   };
 
   return (
-    <div className="relative flex flex-col items-center">
-      <div className="relative w-full max-w-3xl h-150 flex justify-center items-center overflow-hidden">
+    <div className="relative flex flex-col items-center w-full">
+      <div className="relative w-full max-w-full h-[700px] flex justify-center items-center overflow-hidden">
         {images.map((img, i) => {
           let position = "translate-x-full opacity-0 scale-90";
           if (i === index) position = "translate-x-0 opacity-100 scale-100 z-10";
           else if (i === (index - 1 + images.length) % images.length)
-            position = "-translate-x-32 opacity-60 scale-90 z-0";
+            position = "-translate-x-32 opacity-80 scale-90 z-0";
           else if (i === (index + 1) % images.length)
-            position = "translate-x-32 opacity-60 scale-90 z-0";
+            position = "translate-x-32 opacity-80 scale-90 z-0";
+          else if (i == (index - 2 + images.length) % images.length)
+            position = "-translate-x-64 opacity-20 scale-90 z-0";
+          else if (i == (index + 2) % images.length)
+            position = "translate-x-64 opacity-20 scale-90 z-0";
 
           return (
             <motion.img
               key={i}
               src={img}
-              className={`absolute w-3/4 h-3/4 object-cover transition-all duration-500 ease-in-out rounded-2xl ${position}`}
+              className={`absolute w-55/100 h-9/10 object-cover transition-all duration-500 ease-in-out rounded-2xl ${position}`}
             />
           );
         })}
