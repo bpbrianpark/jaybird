@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const images = [
-  "owl.png",
-  "photo2.jpg",
-  "photo3.jpg",
-  "photo4.jpg",
-  "photo5.jpg"
+  "/frontpageimage/robin.jpg",
+  "/frontpageimage/greatblueheron.jpg",
+  "/frontpageimage/lazulibunting.jpg",
+  "/frontpageimage/yellowbird.jpg",
+  "/frontpageimage/bird.jpg"
 ];
 
 export default function PhotoCarousel() {

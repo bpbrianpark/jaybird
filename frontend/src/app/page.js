@@ -12,7 +12,7 @@ export default function Home() {
       <div className="px-10">
       <div className="w-[250px] h-[250px] flex items-right justify-center border-4 border-orange-500 rounded-full shadow-lg overflow-hidden">
           <Image
-            src="/jasonpark.png"
+            src="/frontpageimage/hummingbird2.png"
             alt="Logo"
             width={250}
             height={250}
