@@ -29,7 +29,7 @@ export default function Home() {
       >
         <p style={{ fontSize: "20px", lineHeight: "1.5", margin: "50px"}}>
           Jason Park is a photographer who can capture the perfect moment in a single snapshot. 
-          With everything from eagles soaring through the sky to bears hunting for their next meal, he's always on the hunt for the perfect shot.
+          With everything from eagles soaring through the sky to bears hunting for their next meal, he&apos;s always on the hunt for the perfect shot.
 
         </p>
       </div>
