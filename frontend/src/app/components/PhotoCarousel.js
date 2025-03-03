@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const images = [
-  "/frontpageimage/robin.jpg",
+  "/frontpageimage/redbird.jpg",
   "/frontpageimage/greatblueheron.jpg",
   "/frontpageimage/lazulibunting.jpg",
   "/frontpageimage/yellowbird.jpg",
