@@ -11,7 +11,6 @@ const NavBar = () => {
       <div className="hidden md:flex items-center space-x-15">
         <NavItem href="/" text="About" icon="/person.svg"/>
         <NavItem href="/portfolio" text="Portfolio" icon="/camera.svg"/>
-        <NavItem href="/dex" text="WildDex" icon="/map.svg"/>
         <NavItem href="/contact" text="Contact" icon="/phone.svg"/>
         <div className="w-24 h-16 flex flex-col items-center justify-center rounded-lg hover:bg-gray-200 transition">  
           <Link href="https://www.instagram.com/jasonpark778/" className="flex flex-col items-center space-y-1">
