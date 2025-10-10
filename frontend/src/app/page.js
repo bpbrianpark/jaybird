@@ -1,39 +1,90 @@
 import Image from "next/image";
 import TypeWriter from "./components/Typewriter";
 import PhotoCarousel from "./components/PhotoCarousel";
+import "./home-page.css";
 
 export default function Home() {
   return (
-    <div style={{ textAlign: "left"}}>
-      <div className="flex items-left justify-between w-full max-w-full mx-auto mt-5">
-        <div className="flex-1">
-      <TypeWriter />
-      </div>
-      <div className="px-10">
-      <div className="w-[250px] h-[250px] flex items-right justify-center border-4 border-orange-500 rounded-full shadow-lg overflow-hidden">
-          <Image
-            src="/frontpageimage/hummingbird2.png"
-            alt="Logo"
-            width={250}
-            height={250}
-            className="rounded-full"
-          />
-        </div>
-      </div>
-      </div>
-      <div 
-        style={{
-          maxWidth: "1200px",
-          borderRadius: "10px",
-        }}
-      >
-        <p style={{ fontSize: "20px", lineHeight: "1.5", margin: "50px"}}>
-          Jason Park is a photographer who can capture the perfect moment in a single snapshot. 
-          With everything from eagles soaring through the sky to bears hunting for their next meal, he&apos;s always on the hunt for the perfect shot.
+    <div className="min-h-screen">
+      <section className="home-hero-section">
+        <div className="home-hero-background"></div>
+        
+        <div className="home-hero-content">
+          <div className="home-hero-grid">
+            <div className="home-hero-text-content">
+              <div className="home-hero-title-section">
+                <h1 className="home-hero-title">
+                  <TypeWriter />
+                </h1>
+                <p className="home-hero-subtitle">
+                  Jason Park is a photographer who can capture the perfect moment in a single snapshot. 
+                  With everything from eagles soaring through the sky to bears hunting for their next meal, 
+                  he's always on the hunt for the perfect shot.
+                </p>
+              </div>
+              
+              <div className="home-hero-cta-buttons">
+                <a 
+                  href="/portfolio" 
+                  className="home-cta-button-primary"
+                >
+                  View Portfolio
+                </a>
+                <a 
+                  href="/contact" 
+                  className="home-cta-button-secondary"
+                >
+                  Get In Touch
+                </a>
+              </div>
+            </div>
 
-        </p>
-      </div>
-      <PhotoCarousel />
+            <div className="home-hero-image-container">
+              <div className="home-hero-image-wrapper">
+                <div className="home-hero-image-glow"></div>
+                <div className="home-hero-image">
+                  <Image
+                    src="/frontpageimage/hummingbird2.png"
+                    alt="Jason Park - Wildlife Photographer"
+                    width={400}
+                    height={400}
+                    className="w-full h-full object-cover"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="home-featured-section">
+        <div className="home-featured-container">
+          <div className="home-featured-header">
+            <h2 className="home-featured-title">
+              Featured Work
+            </h2>
+            <p className="home-featured-description">
+              A curated selection of wildlife photography showcasing the beauty and majesty of nature
+            </p>
+          </div>
+          <PhotoCarousel />
+        </div>
+      </section>
+
+      <section className="home-about-section">
+        <div className="home-about-container">
+          <h2 className="home-about-title">
+            About Jason Park
+          </h2>
+          <div className="home-about-content">
+            <p>
+              With over 40 years of experience in photography, Jason Park has been a master of his craft,
+              able to capture the perfect moment in a single snapshot.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,0 +1,62 @@
+.portfolio-hero {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, var(--surface), var(--surface-elevated));
+}
+
+.portfolio-hero-container {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .portfolio-hero-container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .portfolio-hero-container {
+    padding: 0 2rem;
+  }
+}
+
+.portfolio-hero-title {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.portfolio-hero-description {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  max-width: 32rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.portfolio-gallery-section {
+  padding: 3rem 0;
+}
+
+.portfolio-gallery-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .portfolio-gallery-container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .portfolio-gallery-container {
+    padding: 0 2rem;
+  }
+}
