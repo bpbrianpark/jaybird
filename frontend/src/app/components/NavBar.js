@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import NavItem from "./NavItem";
 import { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 import "./navbar.css";
 
@@ -54,18 +55,11 @@ const NavBar = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
-            <svg 
-              className="nav-mobile-icon" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            {isMenuOpen ? (
+              <X className="nav-mobile-icon" />
+            ) : (
+              <Menu className="nav-mobile-icon" />
+            )}
           </button>
         </div>
 

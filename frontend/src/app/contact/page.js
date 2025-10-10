@@ -1,4 +1,5 @@
 import ContactForm from "../components/ContactForm";
+import { Mail } from "lucide-react";
 import "../contact-page.css";
 
 export default function Contact() {
@@ -28,9 +29,7 @@ export default function Contact() {
                 <div className="contact-info-items">
                   <div className="contact-info-item">
                     <div className="contact-info-icon">
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
+                      <Mail />
                     </div>
                     <div className="contact-info-content">
                       <h3>Email</h3>
