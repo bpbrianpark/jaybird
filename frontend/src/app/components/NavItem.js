@@ -1,13 +1,34 @@
 import Link from "next/link";
-import Image from "next/image";
+import { User, Camera, Phone, Instagram } from "lucide-react";
+import "./nav-item.css";
 
-const NavItem = ({href, text, icon}) => (
-    <div className="w-24 h-16 flex flex-col items-center justify-center rounded-lg hover:bg-gray-200 transition">  
-        <Link href={href} className="flex flex-col items-center space-y-1">
-            <Image src={icon} alt={text} width={24} height={24}></Image>
-            <span className="text-sm">{text}</span>
+const NavItem = ({href, text, iconType}) => {
+    const getIcon = () => {
+        switch(iconType) {
+            case 'user':
+                return <User className="nav-item-icon" />;
+            case 'camera':
+                return <Camera className="nav-item-icon" />;
+            case 'phone':
+                return <Phone className="nav-item-icon" />;
+            case 'instagram':
+                return <Instagram className="nav-item-icon" />;
+            default:
+                return <User className="nav-item-icon" />;
+        }
+    };
+
+    return (
+        <Link 
+            href={href} 
+            className="nav-item"
+        >
+            {getIcon()}
+            <span className="nav-item-text">
+                {text}
+            </span>
         </Link>
-    </div> 
-);
+    );
+};
 
 export default NavItem;

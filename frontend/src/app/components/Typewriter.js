@@ -2,24 +2,25 @@
 import React from "react";
 import { useTypewriter, Cursor} from 'react-simple-typewriter'
 
+import "./typewriter.css";
+
 const Typewriter = () => {
     const [text] = useTypewriter({
-        words: ['Photographer.', 'Adventurer.', 'Naturalist.', 'Artist.', 'Father.', 'Husband.'],
+        words: ['Photographer.', 'Adventurer.', 'Conservationist.', 'Artist.', 'Father.', 'Husband.'],
         loop: {},
         typeSpeed: 100,
         deleteSpeed: 100,
     });
 
   return (
-        <h1 style={{margin: '50px', fontSize:'6rem'}}>
-            {' '}
-            <span style={{fontWeight: 'normal', color: '#ef983f'}}>
+        <div className="typewriter-container">
+            <span className="typewriter-text">
                 {text}
             </span>
-            <span style={{color: '#ef983f'}}>
+            <span className="typewriter-cursor">
                 <Cursor cursorStyle="|" />
             </span>
-        </h1>
+        </div>
   );
 };
 

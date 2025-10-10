@@ -1,0 +1,11 @@
+.typewriter-container {
+  color: var(--text-primary);
+}
+
+.typewriter-text {
+  color: var(--primary);
+}
+
+.typewriter-cursor {
+  color: var(--primary);
+}

@@ -1,14 +1,16 @@
 "use client"
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
+import Image from "next/image";
+import "./photo-carousel.css";
 
 const images = [
-  "/frontpageimage/redbird.jpg",
-  "/frontpageimage/greatblueheron.jpg",
-  "/frontpageimage/lazulibunting.jpg",
-  "/frontpageimage/yellowbird.jpg",
-  "/frontpageimage/bird.jpg"
+  { src: "/frontpageimage/redbird.jpg", alt: "Red Bird in Natural Habitat" },
+  { src: "/frontpageimage/greatblueheron.jpg", alt: "Great Blue Heron by the Water" },
+  { src: "/frontpageimage/lazulibunting.jpg", alt: "Lazuli Bunting in Flight" },
+  { src: "/frontpageimage/yellowbird.jpg", alt: "Yellow Bird Perched on Branch" },
+  { src: "/frontpageimage/bird.jpg", alt: "Wild Bird in Natural Environment" }
 ];
 
 export default function PhotoCarousel() {
@@ -23,43 +25,71 @@ export default function PhotoCarousel() {
   };
 
   return (
-    <div className="relative flex flex-col items-center w-full">
-      <div className="relative w-full max-w-full h-[700px] flex justify-center items-center overflow-hidden">
-        {images.map((img, i) => {
-          let position = "translate-x-full opacity-0 scale-90";
-          if (i === index) position = "translate-x-0 opacity-100 scale-100 z-10";
-          else if (i === (index - 1 + images.length) % images.length)
-            position = "-translate-x-32 opacity-80 scale-90 z-0";
-          else if (i === (index + 1) % images.length)
-            position = "translate-x-32 opacity-80 scale-90 z-0";
-          else if (i == (index - 2 + images.length) % images.length)
-            position = "-translate-x-64 opacity-20 scale-90 z-0";
-          else if (i == (index + 2) % images.length)
-            position = "translate-x-64 opacity-20 scale-90 z-0";
-
-          return (
-            <motion.img
-              key={i}
-              src={img}
-              className={`absolute w-55/100 h-9/10 object-cover transition-all duration-500 ease-in-out rounded-2xl ${position}`}
+    <div className="carousel-container">
+      <div className="carousel-main-display">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="carousel-image"
+          >
+            <Image
+              src={images[index].src}
+              alt={images[index].alt}
+              fill
+              className="object-cover"
+              priority
             />
-          );
-        })}
+            <div className="carousel-overlay" />
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="carousel-navigation">
+          <button
+            onClick={prevImage}
+            className="carousel-nav-button"
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="carousel-nav-icon" />
+          </button>
+          
+          <button
+            onClick={nextImage}
+            className="carousel-nav-button"
+            aria-label="Next image"
+          >
+            <ChevronRight className="carousel-nav-icon" />
+          </button>
+        </div>
       </div>
-      <div className="flex items-center gap-30">
-        <button
-          onClick={prevImage}
-          className="p-1 bg-[#ef983f] rounded-full text-white hover:bg-orange-600"
-        >
-          <ChevronLeft />
-        </button>
-        <span className="text-lg font-regular text-[#ef983f] font-size-100">Gallery</span>
-        <button
-          onClick={nextImage}
-          className="p-1 bg-[#ef983f] rounded-full text-white hover:bg-orange-600"
-        >
-          <ChevronRight />
-        </button>
+
+      <div className="carousel-thumbnails">
+        {images.map((img, i) => (
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            className={`carousel-thumbnail ${i === index ? 'active' : ''}`}
+          >
+            <Image
+              src={img.src}
+              alt={img.alt}
+              fill
+              className="object-cover"
+            />
+            {i === index && (
+              <div className="carousel-thumbnail-overlay" />
+            )}
+          </button>
+        ))}
+      </div>
+
+      <div className="carousel-counter">
+        <span className="carousel-counter-text">
+          {index + 1} of {images.length}
+        </span>
       </div>
     </div>
   );

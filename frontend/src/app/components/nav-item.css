@@ -1,0 +1,36 @@
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: var(--surface-elevated);
+}
+
+.nav-item-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--primary);
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover .nav-item-icon {
+  transform: scale(1.1);
+}
+
+.nav-item-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.nav-item:hover .nav-item-text {
+  color: var(--primary);
+}

@@ -1,26 +1,62 @@
+"use client"
 import Link from "next/link";
 import Image from "next/image";
 import NavItem from "./NavItem";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+
+import "./navbar.css";
 
 const NavBar = () => {
-  return (
-    <nav className="bg-white text-orange p-4 flex justify-between items-center">
-        <div className="flex items-center">
-            <Image src="/jasonparklogo.svg" alt="Jason Park Photography" width={150} height={50} className="w-full h-22 object-contain min-w-[150px]"/>
-        </div>
-      <div className="hidden md:flex items-center space-x-15">
-        <NavItem href="/" text="About" icon="/person.svg"/>
-        <NavItem href="/portfolio" text="Portfolio" icon="/camera.svg"/>
-        <NavItem href="/contact" text="Contact" icon="/phone.svg"/>
-        <div className="w-24 h-16 flex flex-col items-center justify-center rounded-lg hover:bg-gray-200 transition">  
-          <Link href="https://www.instagram.com/jasonpark778/" className="flex flex-col items-center space-y-1">
-          <Image src="/instagramlogo.svg" alt="Instagram" width={20} height={20} className="w-1/2 h-1/2 mr-2"/>
-          <span className="text-sm">{"Instagram"}</span>
-          </Link>
-        </div> 
-      </div>
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-      <button className="md:hidden text-3xl">☰</button>
+  return (
+    <nav className="nav-container">
+      <div className="nav-inner">
+        <div className="nav-content">
+          <div className="nav-logo">
+            <Link href="/" className="nav-logo-link">
+              <Image 
+                src="/jasonparkphotographylogo.png" 
+                alt="Jason Park Photography" 
+                width={200} 
+                height={200} 
+                className="nav-logo-image"
+              />
+            </Link>
+          </div>
+
+          <div className="nav-desktop">
+            <NavItem href="/" text="About" iconType="user"/>
+            <NavItem href="/portfolio" text="Portfolio" iconType="camera"/>
+            <NavItem href="/contact" text="Contact" iconType="phone"/>
+            <NavItem href="https://www.instagram.com/jasonpark778/" text="Instagram" iconType="instagram"/>
+          </div>
+
+          <button 
+            className="nav-mobile-button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <X className="nav-mobile-icon" />
+            ) : (
+              <Menu className="nav-mobile-icon" />
+            )}
+          </button>
+        </div>
+
+        {isMenuOpen && (
+          <div className="nav-mobile-menu">
+            <div className="nav-mobile-content">
+              <NavItem href="/" text="About" iconType="user"/>
+              <NavItem href="/portfolio" text="Portfolio" iconType="camera"/>
+              <NavItem href="/contact" text="Contact" iconType="phone"/>
+              <NavItem href="https://www.instagram.com/jasonpark778/" text="Instagram" iconType="instagram"/>
+            </div>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };

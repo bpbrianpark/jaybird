@@ -1,14 +1,18 @@
 "use client"
-import Link from "next/link";
-import Image from "next/image";
-import NavItem from "./NavItem";
 import { useState } from "react";
+import { Send, CheckCircle, AlertCircle } from "lucide-react";
+import "./contact-form.css";
 
 const ContactForm = () => {
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState(false);
+
     async function handleSubmit(event) {
         event.preventDefault();
         setLoading(true);
+        setSuccess(false);
+        setError(false);
         
         const data = {
             name: String(event.target.name.value),
@@ -16,69 +20,116 @@ const ContactForm = () => {
             message: String(event.target.message.value),
         };
 
-        const response = await fetch ("/api/contact", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-    })
+        try {
+            const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
 
-    if (response.ok) {
-        console.log("Message sent successfully");
-        setLoading(false);
-        event.target.name.value= "";
-        event.target.email.value ="";
-        event.target.message.value ="";
+            if (response.ok) {
+                setSuccess(true);
+                event.target.name.value = "";
+                event.target.email.value = "";
+                event.target.message.value = "";
+            } else {
+                setError(true);
+            }
+        } catch (err) {
+            setError(true);
+        } finally {
+            setLoading(false);
+        }
     }
-    if (!response.ok) {
-        console.log("Error sending message");
-        setLoading(false);
-    }
-}
 
   return (
-    <form onSubmit={handleSubmit} className="text-left px-10">
-        <div className="w-full flex flex-col my-4">
-            <label className="font-regular text-[#ef983f] text-left" htmlFor="name">Name</label>
-            <input type="text" 
-            minLength={3}
-            maxLength={55}
-            placeholder="Enter name here"
-            required
-            className="p-4 bg-gray-50 border border-gray-110 rounded-lg" 
-            id="name" 
-            autoComplete="off"/>
+    <form onSubmit={handleSubmit} className="contact-form-container">
+        <div className="contact-form-title">
+            Send a Message
         </div>
 
-        <div className="w-full flex flex-col my-4">
-            <label className="font-regular text-[#ef983f] text-left" htmlFor="email">Email</label>
-            <input 
-            type="email"
-            minLength={5}
-            maxLength={150} 
-            placeholder="Enter email here"
-            required
-            className="p-4 bg-gray-50 border border-gray-110 rounded-lg" 
-            autoComplete="off" 
-            id="email"/>
+        <div className="contact-form-fields">
+            <div className="contact-form-field">
+                <label className="contact-form-label" htmlFor="name">
+                    Name *
+                </label>
+                <input 
+                    type="text" 
+                    minLength={3}
+                    maxLength={55}
+                    placeholder="Your full name"
+                    required
+                    className="contact-form-input" 
+                    id="name" 
+                    autoComplete="name"
+                />
+            </div>
+
+            <div className="contact-form-field">
+                <label className="contact-form-label" htmlFor="email">
+                    Email *
+                </label>
+                <input 
+                    type="email"
+                    minLength={5}
+                    maxLength={150} 
+                    placeholder="your.email@example.com"
+                    required
+                    className="contact-form-input" 
+                    autoComplete="email" 
+                    id="email"
+                />
+            </div>
+
+            <div className="contact-form-field">
+                <label className="contact-form-label" htmlFor="message">
+                    Message *
+                </label>
+                <textarea 
+                    rows={5} 
+                    name="message" 
+                    required 
+                    minLength={10} 
+                    maxLength={500} 
+                    placeholder="Tell me about your project or question..." 
+                    className="contact-form-textarea"
+                />
+            </div>
         </div>
-        <div>
-            <label className="font-regular text-[#ef983f] text-left" htmlFor="email">Message</label>
-            <textarea 
-            rows={4} 
-            name="message" 
-            required 
-            minLength={10} 
-            maxLength={500} 
-            placeholder="Type message here" 
-            className="w-full p-4 bg-gray-50 border border-gray-110 rounded-lg"></textarea>
-        </div>
-        <div className="flex justify-center">
-        <button type="submit" 
-        disabled={loading}
-        className="px-4 py-4 w-24 mt-4 disabled:bg-gray-100 disabled:text-gray-100 bg-[#ef983f] text-white font-medium rounded-2xl">Submit</button>
-        </div>
+
+        {success && (
+            <div className="contact-form-status success">
+                <CheckCircle className="contact-form-status-icon" />
+                <span>Message sent successfully!</span>
+            </div>
+        )}
+
+        {error && (
+            <div className="contact-form-status error">
+                <AlertCircle className="contact-form-status-icon" />
+                <span>Failed to send message. Please try again.</span>
+            </div>
+        )}
+
+        <button 
+            type="submit" 
+            disabled={loading}
+            className="contact-form-submit"
+        >
+            {loading ? (
+                <>
+                    <div className="contact-form-spinner"></div>
+                    <span>Sending...</span>
+                </>
+            ) : (
+                <>
+                    <Send className="contact-form-submit-icon" />
+                    <span>Send Message</span>
+                </>
+            )}
+        </button>
     </form>
   ); 
 };
