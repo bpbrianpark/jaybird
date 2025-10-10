@@ -10,7 +10,7 @@ export default function Portfolio() {
               Portfolio
             </h1>
             <p className="portfolio-hero-description">
-              Explore a curated collection of Jason's photos taken across the beautiful land of North America.
+              Explore a curated collection of Jason's photos from gorgeous landscapes to the breathtaking wildlife of North America.
             </p>
           </div>
         </section>

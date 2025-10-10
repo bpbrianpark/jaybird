@@ -60,14 +60,6 @@ export default function Home() {
 
       <section className="home-featured-section">
         <div className="home-featured-container">
-          <div className="home-featured-header">
-            <h2 className="home-featured-title">
-              Featured Work
-            </h2>
-            <p className="home-featured-description">
-              A curated selection of wildlife photography showcasing the beauty and majesty of nature
-            </p>
-          </div>
           <PhotoCarousel />
         </div>
       </section>

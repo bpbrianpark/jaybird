@@ -27,27 +27,10 @@ const NavBar = () => {
           </div>
 
           <div className="nav-desktop">
-            <NavItem href="/" text="About" icon="/person.svg"/>
-            <NavItem href="/portfolio" text="Portfolio" icon="/camera.svg"/>
-            <NavItem href="/contact" text="Contact" icon="/phone.svg"/>
-
-            <Link 
-              href="https://www.instagram.com/jasonpark778/" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="nav-item"
-            >
-              <Image 
-                src="/instagramlogo.svg" 
-                alt="Instagram" 
-                width={20} 
-                height={20} 
-                className="nav-item-icon"
-              />
-              <span className="nav-item-text">
-                Instagram
-              </span>
-            </Link>
+            <NavItem href="/" text="About" iconType="user"/>
+            <NavItem href="/portfolio" text="Portfolio" iconType="camera"/>
+            <NavItem href="/contact" text="Contact" iconType="phone"/>
+            <NavItem href="https://www.instagram.com/jasonpark778/" text="Instagram" iconType="instagram"/>
           </div>
 
           <button 
@@ -66,26 +49,10 @@ const NavBar = () => {
         {isMenuOpen && (
           <div className="nav-mobile-menu">
             <div className="nav-mobile-content">
-              <NavItem href="/" text="About" icon="/person.svg"/>
-              <NavItem href="/portfolio" text="Portfolio" icon="/camera.svg"/>
-              <NavItem href="/contact" text="Contact" icon="/phone.svg"/>
-              <Link 
-                href="https://www.instagram.com/jasonpark778/" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-item"
-              >
-                <Image 
-                  src="/instagramlogo.svg" 
-                  alt="Instagram" 
-                  width={20} 
-                  height={20} 
-                  className="nav-item-icon"
-                />
-                <span className="nav-item-text">
-                  Instagram
-                </span>
-              </Link>
+              <NavItem href="/" text="About" iconType="user"/>
+              <NavItem href="/portfolio" text="Portfolio" iconType="camera"/>
+              <NavItem href="/contact" text="Contact" iconType="phone"/>
+              <NavItem href="https://www.instagram.com/jasonpark778/" text="Instagram" iconType="instagram"/>
             </div>
           </div>
         )}

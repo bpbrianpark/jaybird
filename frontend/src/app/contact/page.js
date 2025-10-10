@@ -22,7 +22,7 @@ export default function Contact() {
               <div className="contact-info">
                 <div>
                   <h2 className="contact-info-title">
-                    Let's Connect
+                    Let's Connect!
                   </h2>
                 </div>
 
@@ -39,7 +39,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="contact-form-container">
+              <div className="contact-form-container-outer">
                 <ContactForm />
               </div>
             </div>
