@@ -19,7 +19,7 @@ export default function Home() {
                 <p className="home-hero-subtitle">
                   Jason Park is a photographer who can capture the perfect moment in a single snapshot. 
                   With everything from eagles soaring through the sky to bears hunting for their next meal, 
-                  he's always on the hunt for the perfect shot.
+                  he&apos;s always on the hunt for the perfect shot.
                 </p>
               </div>
               

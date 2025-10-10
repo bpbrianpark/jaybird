@@ -11,7 +11,7 @@ export default function Contact() {
               Get In Touch
             </h1>
             <p className="contact-hero-description">
-              Whether you're interested in prints or have questions about our work, let us know!
+              Whether you&apos;re interested in prints or have questions about our work, let us know!
             </p>
           </div>
         </section>
@@ -22,7 +22,7 @@ export default function Contact() {
               <div className="contact-info">
                 <div>
                   <h2 className="contact-info-title">
-                    Let's Connect!
+                    Let&apos;s Connect!
                   </h2>
                 </div>
 
