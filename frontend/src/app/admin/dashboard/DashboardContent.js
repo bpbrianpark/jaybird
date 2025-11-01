@@ -48,9 +48,8 @@ export default function DashboardContent() {
                 setSelectedFiles([]);
                 setUploadSuccess(false);
                 setUploadError("");
-                setImageTitle(""); // Reset title when new file selected
+                setImageTitle("");
                 
-                // Create preview
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     setImagePreview(reader.result);
@@ -63,7 +62,6 @@ export default function DashboardContent() {
         } else {
             const files = Array.from(e.target.files || []);
             if (files.length > 0) {
-                // Limit to 50 files
                 const limitedFiles = files.slice(0, 50);
                 setSelectedFiles(limitedFiles);
                 setSelectedFile(null);
@@ -125,7 +123,6 @@ export default function DashboardContent() {
                 setUploading(false);
             }
         } else {
-            // Multiple files upload
             if (selectedFiles.length === 0) {
                 setUploadError("Please select at least one file");
                 return;

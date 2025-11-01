@@ -41,17 +41,14 @@ export async function POST(req) {
             );
         }
 
-        // Convert file to buffer
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Upload to Cloudinary with optional title in context
         const uploadOptions = {
             resource_type: "image",
             folder: "gallery",
         };
 
-        // Add title to context if provided
         if (title && title.trim()) {
             uploadOptions.context = `title=${title.trim()}`;
         }
