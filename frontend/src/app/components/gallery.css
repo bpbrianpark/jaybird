@@ -157,3 +157,17 @@
   height: 1.25rem;
   color: var(--text-primary);
 }
+
+.gallery-modal-title {
+  padding: 1rem 1.5rem;
+  background: var(--surface-elevated);
+  border-top: 1px solid var(--border);
+}
+
+.gallery-modal-title p {
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin: 0;
+  text-align: center;
+}

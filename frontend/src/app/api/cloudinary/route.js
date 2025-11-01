@@ -16,7 +16,8 @@ export async function GET() {
             throw new Error("Missing Cloudinary environment variables");
         }
 
-        const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image`;
+        // Fetch images only from gallery folder with context/metadata
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?type=upload&prefix=gallery/&context=true&max_results=500`;
         const authHeader = `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`;
 
         const response = await fetch(url, {
@@ -28,11 +29,45 @@ export async function GET() {
         });
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error("❌ Cloudinary API Error Response:", errorText);
             throw new Error(`Cloudinary API request failed. Status: ${response.status}`);
         }
 
         const data = await response.json();
-        return NextResponse.json({ images: data.resources.map((img) => img.secure_url) });
+        return NextResponse.json({ 
+            images: data.resources.map((img) => {
+                // Extract title from context - Cloudinary stores context in different formats
+                let title = null;
+                if (img.context) {
+                    // Context can be a string like "title=My Photo Title" or an object
+                    if (typeof img.context === 'string') {
+                        // Parse string format: "title=My Photo Title|key2=value2"
+                        const titleMatch = img.context.match(/title=([^|]+)/);
+                        if (titleMatch) {
+                            title = titleMatch[1].trim();
+                        }
+                    } else if (img.context.custom && typeof img.context.custom === 'string') {
+                        // Parse custom string format: "title=My Photo Title"
+                        const titleMatch = img.context.custom.match(/title=([^|]+)/);
+                        if (titleMatch) {
+                            title = titleMatch[1].trim();
+                        }
+                    } else if (img.context.custom && typeof img.context.custom === 'object' && img.context.custom.title) {
+                        // Context is already an object with title property
+                        title = img.context.custom.title;
+                    } else if (img.context.title) {
+                        // Direct title property
+                        title = img.context.title;
+                    }
+                }
+                return {
+                    url: img.secure_url,
+                    title: title,
+                    publicId: img.public_id
+                };
+            })
+        });
     } catch (error) {
         console.error("❌ Cloudinary API Error:", error);
         return NextResponse.json({ error: "Failed to fetch images from Cloudinary" }, { status: 500 });

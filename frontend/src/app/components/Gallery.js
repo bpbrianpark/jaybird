@@ -8,6 +8,7 @@ import "./gallery.css";
 const Gallery = () => {
     const [model, setModel] = useState(false);
     const [tempImgSrc, setTempImgSrc] = useState(null);
+    const [tempImgTitle, setTempImgTitle] = useState(null);
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -34,14 +35,21 @@ const Gallery = () => {
         fetchImages();
     }, []);
 
-    const getImg = (imgSrc) => {
-        setTempImgSrc(imgSrc);
+    const getImg = (image) => {
+        if (typeof image === 'string') {
+            setTempImgSrc(image);
+            setTempImgTitle(null);
+        } else {
+            setTempImgSrc(image.url);
+            setTempImgTitle(image.title);
+        }
         setModel(true);
     };
 
     const closeModal = () => {
         setModel(false);
         setTempImgSrc(null);
+        setTempImgTitle(null);
     };
 
     if (loading) {
@@ -79,7 +87,7 @@ const Gallery = () => {
                                         src={tempImgSrc}
                                         width={1200}
                                         height={800}
-                                        alt="Enlarged Image"
+                                        alt={tempImgTitle || "Enlarged Image"}
                                         className="gallery-modal-image"
                                     />
                                     
@@ -91,6 +99,11 @@ const Gallery = () => {
                                             <X className="gallery-modal-button-icon" />
                                         </button>
                                     </div>
+                                    {tempImgTitle && (
+                                        <div className="gallery-modal-title">
+                                            <p>{tempImgTitle}</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </motion.div>
@@ -100,26 +113,30 @@ const Gallery = () => {
 
             <div className="gallery-masonry">
                 {images.length > 0 ? (
-                    images.map((imgSrc, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            onClick={() => getImg(imgSrc)}
-                            className="gallery-item"
-                        >
-                            <div className="gallery-image-container">
-                                <Image
-                                    src={imgSrc}
-                                    width={400} 
-                                    height={600} 
-                                    alt={`Wildlife photography ${index + 1}`}
-                                    className="gallery-image"
-                                />
-                            </div>
-                        </motion.div>
-                    ))
+                    images.map((image, index) => {
+                        const imgSrc = typeof image === 'string' ? image : image.url;
+                        const imgAlt = typeof image === 'string' ? `Wildlife photography ${index + 1}` : (image.title || `Wildlife photography ${index + 1}`);
+                        return (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                onClick={() => getImg(image)}
+                                className="gallery-item"
+                            >
+                                <div className="gallery-image-container">
+                                    <Image
+                                        src={imgSrc}
+                                        width={400} 
+                                        height={600} 
+                                        alt={imgAlt}
+                                        className="gallery-image"
+                                    />
+                                </div>
+                            </motion.div>
+                        );
+                    })
                 ) : (
                     <div className="gallery-empty">
                         <div className="gallery-empty-content">
