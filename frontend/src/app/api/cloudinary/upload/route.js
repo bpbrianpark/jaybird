@@ -32,7 +32,6 @@ export async function POST(req) {
             );
         }
 
-        // Validate file type
         const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
         if (!validTypes.includes(file.type)) {
             return NextResponse.json(
@@ -73,7 +72,6 @@ export async function POST(req) {
             public_id: uploadResult.public_id,
         });
     } catch (error) {
-        console.error("❌ Cloudinary Upload Error:", error);
         return NextResponse.json(
             { error: "Failed to upload image to Cloudinary" },
             { status: 500 }
