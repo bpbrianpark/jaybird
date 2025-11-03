@@ -1,0 +1,110 @@
+/* Shared image modal styles */
+
+.image-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: 72rem;
+  max-height: 90vh;
+  background: var(--surface);
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+}
+
+/* Allow max-width override for dashboard */
+.image-modal-content.dashboard {
+  max-width: 90vw;
+}
+
+.image-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.image-modal-image-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-modal-image {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: none;
+  border-radius: 50%;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.image-modal-close:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.05);
+}
+
+.image-modal-close:active {
+  transform: scale(0.95);
+}
+
+.image-modal-close-icon {
+  width: 1rem;
+  height: 1rem;
+  color: white;
+  stroke-width: 2.5;
+}
+
+.image-modal-title {
+  padding: 0.75rem 1.5rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.image-modal-title p {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin: 0;
+  text-align: center;
+}
+

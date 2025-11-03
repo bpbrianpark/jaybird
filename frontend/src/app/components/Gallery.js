@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./gallery.css";
+import "./image-modal.css";
 
 const Gallery = () => {
     const [model, setModel] = useState(false);
@@ -71,36 +72,36 @@ const Gallery = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="gallery-modal"
+                        className="image-modal"
                         onClick={closeModal}
                     >
                         <motion.div 
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.8, opacity: 0 }}
-                            className="gallery-modal-content"
+                            className="image-modal-content"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {tempImgSrc && (
-                                <div className="gallery-modal-wrapper">
-                                    <div className="gallery-modal-image-container">
+                                <div className="image-modal-wrapper">
+                                    <div className="image-modal-image-container">
                                         <Image
                                             src={tempImgSrc}
                                             width={1200}
                                             height={800}
                                             alt={tempImgTitle || "Enlarged Image"}
-                                            className="gallery-modal-image"
+                                            className="image-modal-image"
                                         />
                                         <button 
                                             onClick={closeModal}
-                                            className="gallery-modal-button"
+                                            className="image-modal-close"
                                             aria-label="Close"
                                         >
-                                            <X className="gallery-modal-button-icon" />
+                                            <X className="image-modal-close-icon" />
                                         </button>
                                     </div>
                                     {tempImgTitle && (
-                                        <div className="gallery-modal-title">
+                                        <div className="image-modal-title">
                                             <p>{tempImgTitle}</p>
                                         </div>
                                     )}

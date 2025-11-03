@@ -309,76 +309,7 @@
     height: 1.25rem;
 }
 
-.admin-dashboard-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 2rem;
-    cursor: pointer;
-}
-
-.admin-dashboard-modal-content {
-    position: relative;
-    max-width: 90vw;
-    max-height: 90vh;
-    cursor: default;
-}
-
-.admin-dashboard-modal-close {
-    position: absolute;
-    top: -2.5rem;
-    right: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 0.25rem;
-    padding: 0.5rem;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease;
-}
-
-.admin-dashboard-modal-close:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.admin-dashboard-modal-close svg {
-    width: 1.5rem;
-    height: 1.5rem;
-}
-
-.admin-dashboard-modal-image {
-    max-width: 100%;
-    max-height: 80vh;
-    object-fit: contain;
-    border-radius: 0.5rem;
-    display: block;
-}
-
-.admin-dashboard-modal-title {
-    margin-top: 1.5rem;
-    padding: 1rem 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem;
-    backdrop-filter: blur(10px);
-}
-
-.admin-dashboard-modal-title p {
-    color: white;
-    font-size: 1.125rem;
-    font-weight: 500;
-    margin: 0;
-    text-align: center;
-}
+/* Dashboard modal styles moved to image-modal.css */
 
 .admin-dashboard-title-input-wrapper {
     display: flex;

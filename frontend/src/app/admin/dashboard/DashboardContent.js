@@ -4,6 +4,7 @@ import { Upload, CheckCircle, AlertCircle, Image as ImageIcon, LogOut, Maximize2
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import "./dashboard.css";
+import "../../components/image-modal.css";
 
 export default function DashboardContent() {
     const [uploadMode, setUploadMode] = useState("single"); // "single" or "multiple"
@@ -403,25 +404,29 @@ export default function DashboardContent() {
                         </div>
                     )}
                     {expandedImage && (
-                        <div className="admin-dashboard-modal" onClick={() => setExpandedImage(null)}>
-                            <div className="admin-dashboard-modal-content" onClick={(e) => e.stopPropagation()}>
-                                <button
-                                    className="admin-dashboard-modal-close"
-                                    onClick={() => setExpandedImage(null)}
-                                    aria-label="Close"
-                                >
-                                    <X />
-                                </button>
-                                <img
-                                    src={typeof expandedImage === 'object' ? expandedImage.url : expandedImage}
-                                    alt={typeof expandedImage === 'object' ? (expandedImage.title || "Expanded") : "Expanded"}
-                                    className="admin-dashboard-modal-image"
-                                />
-                                {typeof expandedImage === 'object' && expandedImage.title && (
-                                    <div className="admin-dashboard-modal-title">
-                                        <p>{expandedImage.title}</p>
+                        <div className="image-modal" style={{ zIndex: 1000 }} onClick={() => setExpandedImage(null)}>
+                            <div className="image-modal-content dashboard" onClick={(e) => e.stopPropagation()}>
+                                <div className="image-modal-wrapper">
+                                    <div className="image-modal-image-container">
+                                        <img
+                                            src={typeof expandedImage === 'object' ? expandedImage.url : expandedImage}
+                                            alt={typeof expandedImage === 'object' ? (expandedImage.title || "Expanded") : "Expanded"}
+                                            className="image-modal-image"
+                                        />
+                                        <button
+                                            className="image-modal-close"
+                                            onClick={() => setExpandedImage(null)}
+                                            aria-label="Close"
+                                        >
+                                            <X className="image-modal-close-icon" />
+                                        </button>
                                     </div>
-                                )}
+                                    {typeof expandedImage === 'object' && expandedImage.title && (
+                                        <div className="image-modal-title">
+                                            <p>{expandedImage.title}</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     )}
