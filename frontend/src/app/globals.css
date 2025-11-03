@@ -102,7 +102,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Disable context menu and selection on images and videos */
 img,
 video {
   user-select: none;
@@ -116,7 +115,6 @@ video {
   pointer-events: auto;
 }
 
-/* Prevent image dragging */
 img::selection,
 video::selection {
   background: transparent;
