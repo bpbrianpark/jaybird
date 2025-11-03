@@ -11,6 +11,7 @@ export default function DashboardContent() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreview, setImagePreview] = useState(null);
+    const [previewType, setPreviewType] = useState(null); // 'image' or 'video'
     const [imageTitle, setImageTitle] = useState("");
     const [uploading, setUploading] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -51,6 +52,10 @@ export default function DashboardContent() {
                 setUploadError("");
                 setImageTitle("");
                 
+                // Detect if it's a video
+                const isVideo = file.type.startsWith('video/');
+                setPreviewType(isVideo ? 'video' : 'image');
+                
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     setImagePreview(reader.result);
@@ -59,6 +64,7 @@ export default function DashboardContent() {
             } else {
                 setSelectedFile(null);
                 setImagePreview(null);
+                setPreviewType(null);
             }
         } else {
             const files = Array.from(e.target.files || []);
@@ -67,6 +73,7 @@ export default function DashboardContent() {
                 setSelectedFiles(limitedFiles);
                 setSelectedFile(null);
                 setImagePreview(null);
+                setPreviewType(null);
                 setUploadSuccess(false);
                 setUploadError("");
                 if (limitedFiles.length < files.length) {
@@ -112,6 +119,7 @@ export default function DashboardContent() {
                 setUploadSuccess(true);
                 setSelectedFile(null);
                 setImagePreview(null);
+                setPreviewType(null);
                 setImageTitle("");
                 const fileInput = document.getElementById("file-upload");
                 if (fileInput) {
@@ -204,7 +212,8 @@ export default function DashboardContent() {
         }
 
         try {
-            const response = await fetch(`/api/cloudinary/delete?publicId=${encodeURIComponent(image.publicId)}`, {
+            const resourceType = image.resourceType || 'image';
+            const response = await fetch(`/api/cloudinary/delete?publicId=${encodeURIComponent(image.publicId)}&resourceType=${encodeURIComponent(resourceType)}`, {
                 method: "DELETE",
             });
 
@@ -237,7 +246,7 @@ export default function DashboardContent() {
 
             <div className="admin-dashboard-content">
                 <div className="admin-dashboard-upload-section">
-                    <h2 className="admin-dashboard-section-title">Upload Image</h2>
+                    <h2 className="admin-dashboard-section-title">Upload Media</h2>
                     
                     <div className="admin-dashboard-upload-mode-selector">
                         <button
@@ -255,7 +264,7 @@ export default function DashboardContent() {
                             }}
                             className={`admin-dashboard-mode-button ${uploadMode === "single" ? "active" : ""}`}
                         >
-                            Single Image
+                            Single File
                         </button>
                         <button
                             type="button"
@@ -280,16 +289,25 @@ export default function DashboardContent() {
                         <div className="admin-dashboard-file-input-wrapper">
                             {uploadMode === "single" && imagePreview ? (
                                 <div className="admin-dashboard-preview-wrapper">
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="admin-dashboard-preview-image"
-                                    />
+                                    {previewType === 'video' ? (
+                                        <video
+                                            src={imagePreview}
+                                            controls
+                                            className="admin-dashboard-preview-image"
+                                        />
+                                    ) : (
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="admin-dashboard-preview-image"
+                                        />
+                                    )}
                                     <button
                                         type="button"
                                         onClick={() => {
                                             setSelectedFile(null);
                                             setImagePreview(null);
+                                            setPreviewType(null);
                                             const fileInput = document.getElementById("file-upload");
                                             if (fileInput) {
                                                 fileInput.value = "";
@@ -306,17 +324,17 @@ export default function DashboardContent() {
                                     <ImageIcon className="admin-dashboard-file-icon" />
                                     <span>
                                         {uploadMode === "single"
-                                            ? "Choose an image file"
+                                            ? "Choose an image or video file"
                                             : selectedFiles.length > 0
                                             ? `${selectedFiles.length} file${selectedFiles.length > 1 ? "s" : ""} selected`
-                                            : "Choose image files (up to 50)"}
+                                            : "Choose image or video files (up to 50)"}
                                     </span>
                                 </label>
                             )}
                             <input
                                 id="file-upload"
                                 type="file"
-                                accept="image/*"
+                                accept="image/*,video/*"
                                 multiple={uploadMode === "multiple"}
                                 onChange={handleFileChange}
                                 className="admin-dashboard-file-input"
@@ -416,29 +434,41 @@ export default function DashboardContent() {
                         </div>
                     ) : (
                         <div className="admin-dashboard-images-grid">
-                            {images.map((image, index) => (
-                                <div key={index} className="admin-dashboard-image-card">
-                                    <img
-                                        src={image.url}
-                                        alt={image.title || `Uploaded image ${index + 1}`}
-                                        className="admin-dashboard-image"
-                                    />
-                                    <button
-                                        onClick={() => setExpandedImage(image)}
-                                        className="admin-dashboard-expand-button"
-                                        aria-label="Expand image"
-                                    >
-                                        <Maximize2 className="admin-dashboard-expand-icon" />
-                                    </button>
-                                    <button
-                                        onClick={(e) => handleDeleteImage(image, e)}
-                                        className="admin-dashboard-delete-button"
-                                        aria-label="Delete image"
-                                    >
-                                        <Trash2 className="admin-dashboard-delete-icon" />
-                                    </button>
-                                </div>
-                            ))}
+                            {images.map((image, index) => {
+                                const isVideo = image.resourceType === 'video' || image.url.match(/\.(mp4|webm|mov|avi)$/i);
+                                return (
+                                    <div key={index} className="admin-dashboard-image-card">
+                                        {isVideo ? (
+                                            <video
+                                                src={image.url}
+                                                className="admin-dashboard-image"
+                                                muted
+                                                playsInline
+                                            />
+                                        ) : (
+                                            <img
+                                                src={image.url}
+                                                alt={image.title || `Uploaded image ${index + 1}`}
+                                                className="admin-dashboard-image"
+                                            />
+                                        )}
+                                        <button
+                                            onClick={() => setExpandedImage(image)}
+                                            className="admin-dashboard-expand-button"
+                                            aria-label="Expand media"
+                                        >
+                                            <Maximize2 className="admin-dashboard-expand-icon" />
+                                        </button>
+                                        <button
+                                            onClick={(e) => handleDeleteImage(image, e)}
+                                            className="admin-dashboard-delete-button"
+                                            aria-label="Delete media"
+                                        >
+                                            <Trash2 className="admin-dashboard-delete-icon" />
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
                     {expandedImage && (
@@ -446,11 +476,25 @@ export default function DashboardContent() {
                             <div className="image-modal-content dashboard" onClick={(e) => e.stopPropagation()}>
                                 <div className="image-modal-wrapper">
                                     <div className="image-modal-image-container">
-                                        <img
-                                            src={typeof expandedImage === 'object' ? expandedImage.url : expandedImage}
-                                            alt={typeof expandedImage === 'object' ? (expandedImage.title || "Expanded") : "Expanded"}
-                                            className="image-modal-image"
-                                        />
+                                        {(() => {
+                                            const imageUrl = typeof expandedImage === 'object' ? expandedImage.url : expandedImage;
+                                            const isVideo = typeof expandedImage === 'object' && (expandedImage.resourceType === 'video' || expandedImage.url.match(/\.(mp4|webm|mov|avi)$/i));
+                                            
+                                            return isVideo ? (
+                                                <video
+                                                    src={imageUrl}
+                                                    className="image-modal-image"
+                                                    controls
+                                                    autoPlay
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={typeof expandedImage === 'object' ? (expandedImage.title || "Expanded") : "Expanded"}
+                                                    className="image-modal-image"
+                                                />
+                                            );
+                                        })()}
                                         <button
                                             className="image-modal-close"
                                             onClick={() => setExpandedImage(null)}
