@@ -82,19 +82,19 @@ const Gallery = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             {tempImgSrc && (
-                                <div className="relative">
-                                    <Image
-                                        src={tempImgSrc}
-                                        width={1200}
-                                        height={800}
-                                        alt={tempImgTitle || "Enlarged Image"}
-                                        className="gallery-modal-image"
-                                    />
-                                    
-                                    <div className="gallery-modal-actions">
+                                <div className="gallery-modal-wrapper">
+                                    <div className="gallery-modal-image-container">
+                                        <Image
+                                            src={tempImgSrc}
+                                            width={1200}
+                                            height={800}
+                                            alt={tempImgTitle || "Enlarged Image"}
+                                            className="gallery-modal-image"
+                                        />
                                         <button 
                                             onClick={closeModal}
                                             className="gallery-modal-button"
+                                            aria-label="Close"
                                         >
                                             <X className="gallery-modal-button-icon" />
                                         </button>
