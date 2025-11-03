@@ -37,14 +37,21 @@ const Gallery = () => {
     }, []);
 
     const getImg = (image) => {
+        let imageUrl;
+        let title;
+        
         if (typeof image === 'string') {
-            setTempImgSrc(image);
-            setTempImgTitle(null);
+            imageUrl = image;
+            title = null;
         } else {
-            setTempImgSrc(image.url);
-            setTempImgTitle(image.title);
+            imageUrl = image.url;
+            title = image.title;
         }
-        setModel(true);
+
+
+        setTempImgSrc(imageUrl);
+        setTempImgTitle(title);
+        setModel(true); 
     };
 
     const closeModal = () => {
@@ -76,21 +83,21 @@ const Gallery = () => {
                         onClick={closeModal}
                     >
                         <motion.div 
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
                             className="image-modal-content"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {tempImgSrc && (
                                 <div className="image-modal-wrapper">
                                     <div className="image-modal-image-container">
-                                        <Image
+                                        <img
                                             src={tempImgSrc}
-                                            width={1200}
-                                            height={800}
                                             alt={tempImgTitle || "Enlarged Image"}
                                             className="image-modal-image"
+                                            style={{ display: 'block' }}
                                         />
                                         <button 
                                             onClick={closeModal}
@@ -124,6 +131,11 @@ const Gallery = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 onClick={() => getImg(image)}
+                                onMouseEnter={() => {
+                                    // Preload the full image when hovering
+                                    const preloadImg = new window.Image();
+                                    preloadImg.src = imgSrc;
+                                }}
                                 className="gallery-item"
                             >
                                 <div className="gallery-image-container">
