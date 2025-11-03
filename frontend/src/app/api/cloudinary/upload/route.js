@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import { writeFile, unlink } from "fs/promises";
+import { join } from "path";
+import { tmpdir } from "os";
 import "dotenv/config";
 
 cloudinary.config({
@@ -44,11 +47,18 @@ export async function POST(req) {
             );
         }
 
-        // Detect resource type based on file MIME type
         const resourceType = isValidVideo ? "video" : "image";
 
+        let fileSize = file.size || 0;
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
+        
+        if (!fileSize) {
+            fileSize = buffer.length;
+        }
+
+        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB
+        const isLargeFile = fileSize > LARGE_FILE_THRESHOLD;
 
         const uploadOptions = {
             resource_type: resourceType,
@@ -64,19 +74,56 @@ export async function POST(req) {
             uploadOptions.context = `title=${title.trim()}`;
         }
 
-        const uploadResult = await new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-                uploadOptions,
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(result);
-                    }
+        let uploadResult;
+        let tempFilePath = null;
+
+        try {
+            if (isLargeFile) {
+
+                const tempDir = tmpdir();
+                const fileExtension = file.name.split('.').pop() || (resourceType === "video" ? "mp4" : "jpg");
+                tempFilePath = join(tempDir, `cloudinary-upload-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExtension}`);
+                
+                await writeFile(tempFilePath, buffer);
+                
+                uploadOptions.chunk_size = 20000000; 
+                
+                uploadResult = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_large(
+                        tempFilePath,
+                        uploadOptions,
+                        (error, result) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(result);
+                            }
+                        }
+                    );
+                });
+            } else {
+                uploadResult = await new Promise((resolve, reject) => {
+                    const uploadStream = cloudinary.uploader.upload_stream(
+                        uploadOptions,
+                        (error, result) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(result);
+                            }
+                        }
+                    );
+                    uploadStream.end(buffer);
+                });
+            }
+        } finally {
+            if (tempFilePath) {
+                try {
+                    await unlink(tempFilePath);
+                } catch (cleanupError) {
                 }
-            );
-            uploadStream.end(buffer);
-        });
+            }
+        }
 
         return NextResponse.json({
             success: true,
