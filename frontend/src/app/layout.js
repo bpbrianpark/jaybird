@@ -6,6 +6,9 @@ import ImageProtection from "./components/ImageProtection";
 export const metadata = {
   title: "Jason Park Photography",
   description: "A photography website",
+  icons: {
+    icon: "/jasonlogo.png",
+  },
 };
   
   export default function RootLayout({ children }) {

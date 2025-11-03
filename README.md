@@ -1,8 +1,22 @@
-# Jason Park Photography
+<div style="display: flex; gap: 10px; flex-wrap: 
+nowrap;">
+  <img src="frontend/public/jasonparkphotographylogo.png" 
+alt="Jason Park Photography Logo">
+</div>
+
+# Project Jaybird
 
 A photography portfolio website showcasing the work of Jason Park, a wildlife photographer with over 40 years of experience capturing moments in nature.
 
 This is a Next.js application that features a public-facing gallery, portfolio display, contact form, and an admin dashboard for managing and uploading new images.
+
+https://www.jasonparkphotography.ca
+
+<div style="display: flex; gap: 10px; flex-wrap: 
+nowrap;">
+  <img src="frontend/public/preview.png" 
+alt="Jason Park Photography Logo">
+</div>
 
 ## Features
 
@@ -47,11 +61,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 The main application code is in `frontend/src/app`. The public pages include the home page with a photo carousel, portfolio gallery, and contact form. The admin dashboard is located at `/admin/dashboard` and requires authentication.
 
 API routes handle authentication, Cloudinary image management, and contact form submissions. Components are reusable pieces like the navigation bar, footer, gallery, and image cards.
-
-
-
-
-
 
 ## Tech Stack
 
