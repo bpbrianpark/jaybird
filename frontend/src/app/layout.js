@@ -1,6 +1,7 @@
 import "./globals.css";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
+import ImageProtection from "./components/ImageProtection";
 
 export const metadata = {
   title: "Jason Park Photography",
@@ -11,6 +12,7 @@ export const metadata = {
     return (
      <html lang="en" className="scroll-smooth">
            <body className="main-page">
+             <ImageProtection />
              <NavBar />
              <main>{children}</main>
              <Footer />
