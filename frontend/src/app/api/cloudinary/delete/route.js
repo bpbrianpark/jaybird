@@ -23,6 +23,7 @@ export async function DELETE(req) {
 
         const { searchParams } = new URL(req.url);
         const publicId = searchParams.get("publicId");
+        const resourceType = searchParams.get("resourceType") || "image";
 
         if (!publicId) {
             return NextResponse.json(
@@ -31,7 +32,9 @@ export async function DELETE(req) {
             );
         }
 
-        const result = await cloudinary.uploader.destroy(publicId);
+        const result = await cloudinary.uploader.destroy(publicId, {
+            resource_type: resourceType
+        });
 
         if (result.result === "ok" || result.result === "not found") {
             return NextResponse.json({

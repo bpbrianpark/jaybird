@@ -16,49 +16,67 @@ export async function GET() {
             throw new Error("Missing Cloudinary environment variables");
         }
 
-        const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?type=upload&prefix=gallery/&context=true&max_results=500`;
-        const authHeader = `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`;
+        // Fetch both images and videos
+        const [imagesResponse, videosResponse] = await Promise.all([
+            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/image?type=upload&prefix=gallery/&context=true&max_results=500`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`,
+                    "Content-Type": "application/json",
+                },
+            }),
+            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/video?type=upload&prefix=gallery/&context=true&max_results=500`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`,
+                    "Content-Type": "application/json",
+                },
+            })
+        ]);
 
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: authHeader,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Cloudinary API request failed. Status: ${response.status}`);
+        if (!imagesResponse.ok && !videosResponse.ok) {
+            throw new Error(`Cloudinary API request failed`);
         }
 
-        const data = await response.json();
-        return NextResponse.json({ 
-            images: data.resources.map((img) => {
+        const processResources = (resources) => {
+            return resources.map((resource) => {
                 let title = null;
-                if (img.context) {
-                    if (typeof img.context === 'string') {
-                        const titleMatch = img.context.match(/title=([^|]+)/);
+                if (resource.context) {
+                    if (typeof resource.context === 'string') {
+                        const titleMatch = resource.context.match(/title=([^|]+)/);
                         if (titleMatch) {
                             title = titleMatch[1].trim();
                         }
-                    } else if (img.context.custom && typeof img.context.custom === 'string') {
-                        const titleMatch = img.context.custom.match(/title=([^|]+)/);
+                    } else if (resource.context.custom && typeof resource.context.custom === 'string') {
+                        const titleMatch = resource.context.custom.match(/title=([^|]+)/);
                         if (titleMatch) {
                             title = titleMatch[1].trim();
                         }
-                    } else if (img.context.custom && typeof img.context.custom === 'object' && img.context.custom.title) {
-                        title = img.context.custom.title;
-                    } else if (img.context.title) {
-                        title = img.context.title;
+                    } else if (resource.context.custom && typeof resource.context.custom === 'object' && resource.context.custom.title) {
+                        title = resource.context.custom.title;
+                    } else if (resource.context.title) {
+                        title = resource.context.title;
                     }
                 }
                 return {
-                    url: img.secure_url,
+                    url: resource.secure_url,
                     title: title,
-                    publicId: img.public_id
+                    publicId: resource.public_id,
+                    resourceType: resource.resource_type || (resource.format ? 'video' : 'image')
                 };
-            })
+            });
+        };
+
+        const imagesData = imagesResponse.ok ? await imagesResponse.json() : { resources: [] };
+        const videosData = videosResponse.ok ? await videosResponse.json() : { resources: [] };
+
+        const allResources = [
+            ...processResources(imagesData.resources || []),
+            ...processResources(videosData.resources || [])
+        ];
+
+        return NextResponse.json({ 
+            images: allResources
         });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch images from Cloudinary" }, { status: 500 });

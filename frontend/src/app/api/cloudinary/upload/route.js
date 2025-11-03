@@ -32,21 +32,33 @@ export async function POST(req) {
             );
         }
 
-        const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
-        if (!validTypes.includes(file.type)) {
+        const validImageTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+        const validVideoTypes = ["video/mp4", "video/mpeg", "video/quicktime", "video/x-msvideo", "video/webm", "video/x-matroska"];
+        const isValidImage = validImageTypes.includes(file.type);
+        const isValidVideo = validVideoTypes.includes(file.type);
+
+        if (!isValidImage && !isValidVideo) {
             return NextResponse.json(
-                { error: "Invalid file type. Only images are allowed." },
+                { error: "Invalid file type. Only images and videos are allowed." },
                 { status: 400 }
             );
         }
+
+        // Detect resource type based on file MIME type
+        const resourceType = isValidVideo ? "video" : "image";
 
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
         const uploadOptions = {
-            resource_type: "image",
+            resource_type: resourceType,
             folder: "gallery",
         };
+
+        if (resourceType === "video") {
+            uploadOptions.eager = "mp4"; 
+            uploadOptions.eager_async = false;
+        }
 
         if (title && title.trim()) {
             uploadOptions.context = `title=${title.trim()}`;
@@ -72,8 +84,9 @@ export async function POST(req) {
             public_id: uploadResult.public_id,
         });
     } catch (error) {
+        console.error("Upload error:", error);
         return NextResponse.json(
-            { error: "Failed to upload image to Cloudinary" },
+            { error: `Failed to upload file to Cloudinary: ${error.message}` },
             { status: 500 }
         );
     }
