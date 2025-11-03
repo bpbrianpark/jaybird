@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Upload, CheckCircle, AlertCircle, Image as ImageIcon, LogOut, Maximize2, X } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, Image as ImageIcon, LogOut, Maximize2, X, Trash2 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import "./dashboard.css";
@@ -189,6 +189,37 @@ export default function DashboardContent() {
         await signOut({ redirect: false });
         router.push("/admin/login");
         router.refresh();
+    };
+
+    const handleDeleteImage = async (image, e) => {
+        e.stopPropagation(); // Prevent expanding the image when clicking delete
+        
+        if (!image.publicId) {
+            setUploadError("Cannot delete: Image missing public ID");
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete this image? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/cloudinary/delete?publicId=${encodeURIComponent(image.publicId)}`, {
+                method: "DELETE",
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to delete image");
+            }
+
+            // Refresh the images list
+            fetchImages();
+        } catch (error) {
+            console.error("Error deleting image:", error);
+            setUploadError(error.message || "Failed to delete image");
+        }
     };
 
     return (
@@ -398,6 +429,13 @@ export default function DashboardContent() {
                                         aria-label="Expand image"
                                     >
                                         <Maximize2 className="admin-dashboard-expand-icon" />
+                                    </button>
+                                    <button
+                                        onClick={(e) => handleDeleteImage(image, e)}
+                                        className="admin-dashboard-delete-button"
+                                        aria-label="Delete image"
+                                    >
+                                        <Trash2 className="admin-dashboard-delete-icon" />
                                     </button>
                                 </div>
                             ))}

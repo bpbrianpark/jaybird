@@ -309,7 +309,42 @@
     height: 1.25rem;
 }
 
-/* Dashboard modal styles moved to image-modal.css */
+.admin-dashboard-delete-button {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background: rgba(220, 38, 38, 0.9);
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.2s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.admin-dashboard-image-card:hover .admin-dashboard-delete-button {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.admin-dashboard-delete-button:hover {
+    background: rgba(185, 28, 28, 1);
+    transform: scale(1.05);
+}
+
+.admin-dashboard-delete-button:active {
+    transform: scale(0.95);
+}
+
+.admin-dashboard-delete-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
 
 .admin-dashboard-title-input-wrapper {
     display: flex;
