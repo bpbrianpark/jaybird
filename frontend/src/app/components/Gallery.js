@@ -138,14 +138,16 @@ const Gallery = ({ enableTagFilter = true }) => {
                                                 playsInline
                                                 poster={expandedMedia.thumbnailUrl || undefined}
                                             >
-                                                Sorry, your browser doesn't support embedded videos.
+                                                Sorry, your browser doesn&#39;t support embedded videos.
                                             </video>
                                         ) : (
-                                            <img
+                                            <Image
                                                 src={expandedMedia.url}
                                                 alt={expandedMedia.title || "Enlarged Media"}
+                                                width={expandedMedia.width || 1600}
+                                                height={expandedMedia.height || 1066}
                                                 className="image-modal-image"
-                                                style={{ display: 'block' }}
+                                                sizes="(max-width: 768px) 100vw, 80vw"
                                             />
                                         )}
                                         <button 
