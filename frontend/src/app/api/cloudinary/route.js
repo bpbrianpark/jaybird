@@ -53,11 +53,19 @@ export async function GET() {
                         title = resource.context.title;
                     }
                 }
+                const resourceType = resource.resource_type || (resource.format ? 'video' : 'image');
+                const isVideo = resourceType === 'video';
+
                 return {
                     url: resource.secure_url,
-                    title: title,
+                    thumbnailUrl: isVideo ? resource.thumbnail_url || resource.secure_url : resource.secure_url,
+                    title,
                     publicId: resource.public_id,
-                    resourceType: resource.resource_type || (resource.format ? 'video' : 'image'),
+                    resourceType,
+                    isVideo,
+                    width: resource.width,
+                    height: resource.height,
+                    duration: isVideo ? resource.duration : undefined,
                     tags: Array.isArray(resource.tags) ? resource.tags : []
                 };
             });
