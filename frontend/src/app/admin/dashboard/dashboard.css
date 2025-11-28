@@ -445,3 +445,91 @@
     text-align: center;
 }
 
+.admin-dashboard-tags-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-dashboard-tags-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.admin-dashboard-tags-pill {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.75rem;
+    border-radius: 999px;
+}
+
+.admin-dashboard-tags-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    min-height: 56px;
+}
+
+.admin-dashboard-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.admin-dashboard-tag-remove {
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.admin-dashboard-tag-remove:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.admin-dashboard-tags-field {
+    flex: 1;
+    min-width: 160px;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-primary);
+}
+
+.admin-dashboard-tags-field:focus {
+    outline: none;
+}
+
+.admin-dashboard-tags-field::placeholder {
+    color: var(--text-muted);
+}
+
+.admin-dashboard-tags-hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+

@@ -7,11 +7,11 @@ import "./dashboard.css";
 import "../../components/image-modal.css";
 
 export default function DashboardContent() {
-    const [uploadMode, setUploadMode] = useState("single"); // "single" or "multiple"
+    const [uploadMode, setUploadMode] = useState("single"); 
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreview, setImagePreview] = useState(null);
-    const [previewType, setPreviewType] = useState(null); // 'image' or 'video'
+    const [previewType, setPreviewType] = useState(null); 
     const [imageTitle, setImageTitle] = useState("");
     const [uploading, setUploading] = useState(false);
     const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -20,6 +20,8 @@ export default function DashboardContent() {
     const [images, setImages] = useState([]);
     const [loadingImages, setLoadingImages] = useState(true);
     const [expandedImage, setExpandedImage] = useState(null);
+    const [tagInput, setTagInput] = useState("");
+    const [tags, setTags] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -85,6 +87,47 @@ export default function DashboardContent() {
         }
     };
 
+    const formatTagLabel = (tag) =>
+        tag
+            ?.split("-")
+            .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+            .join(" ");
+
+    const addTagFromInput = () => {
+        if (!tagInput.trim()) {
+            return;
+        }
+
+        const normalized = tagInput
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/\s+/g, "-");
+
+        if (normalized && !tags.includes(normalized)) {
+            setTags((prev) => [...prev, normalized]);
+        }
+
+        setTagInput("");
+    };
+
+    const handleTagKeyDown = (e) => {
+        if (["Enter", "Tab", ","].includes(e.key)) {
+            e.preventDefault();
+            addTagFromInput();
+        } else if (e.key === "Backspace" && !tagInput && tags.length > 0) {
+            e.preventDefault();
+            setTags((prev) => prev.slice(0, -1));
+        }
+    };
+
+    const handleTagBlur = () => {
+        addTagFromInput();
+    };
+
+    const removeTag = (tag) => {
+        setTags((prev) => prev.filter((value) => value !== tag));
+    };
+
     const handleUpload = async (e) => {
         e.preventDefault();
         
@@ -104,6 +147,9 @@ export default function DashboardContent() {
                 if (imageTitle.trim()) {
                     formData.append("title", imageTitle.trim());
                 }
+                if (tags.length) {
+                    formData.append("tags", tags.join(","));
+                }
 
                 const response = await fetch("/api/cloudinary/upload", {
                     method: "POST",
@@ -121,6 +167,8 @@ export default function DashboardContent() {
                 setImagePreview(null);
                 setPreviewType(null);
                 setImageTitle("");
+                setTags([]);
+                setTagInput("");
                 const fileInput = document.getElementById("file-upload");
                 if (fileInput) {
                     fileInput.value = "";
@@ -154,6 +202,9 @@ export default function DashboardContent() {
                     try {
                         const formData = new FormData();
                         formData.append("file", file);
+                        if (tags.length) {
+                            formData.append("tags", tags.join(","));
+                        }
 
                         const response = await fetch("/api/cloudinary/upload", {
                             method: "POST",
@@ -179,6 +230,8 @@ export default function DashboardContent() {
                 }
 
                 setSelectedFiles([]);
+                setTags([]);
+                setTagInput("");
                 const fileInput = document.getElementById("file-upload");
                 if (fileInput) {
                     fileInput.value = "";
@@ -357,6 +410,43 @@ export default function DashboardContent() {
                                 />
                             </div>
                         )}
+
+                        <div className="admin-dashboard-tags-input-wrapper">
+                            <div className="admin-dashboard-tags-header">
+                                <label htmlFor="image-tags" className="admin-dashboard-title-label">
+                                    Tags
+                                </label>
+                                <span className="admin-dashboard-tags-pill">Portfolio Filters</span>
+                            </div>
+                            <div className="admin-dashboard-tags-input">
+                                {tags.map((tag) => (
+                                    <span key={tag} className="admin-dashboard-tag-chip">
+                                        {formatTagLabel(tag)}
+                                        <button
+                                            type="button"
+                                            className="admin-dashboard-tag-remove"
+                                            aria-label={`Remove ${tag}`}
+                                            onClick={() => removeTag(tag)}
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </span>
+                                ))}
+                                <input
+                                    id="image-tags"
+                                    type="text"
+                                    value={tagInput}
+                                    onChange={(e) => setTagInput(e.target.value)}
+                                    onKeyDown={handleTagKeyDown}
+                                    onBlur={handleTagBlur}
+                                    placeholder="Add a tag and press Enter…"
+                                    className="admin-dashboard-tags-field"
+                                />
+                            </div>
+                            <p className="admin-dashboard-tags-hint">
+                                Press Enter, Tab, or comma to add. Tags are auto-created when you upload.
+                            </p>
+                        </div>
 
                         {uploadMode === "multiple" && selectedFiles.length > 0 && (
                             <div className="admin-dashboard-files-list">

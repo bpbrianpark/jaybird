@@ -7,25 +7,20 @@ export async function GET() {
         const apiKey = process.env.CLOUDINARY_API_KEY;
         const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-        console.log("🛠️ Cloudinary Config:");
-        console.log("CLOUD_NAME:", cloudName);
-        console.log("API_KEY:", apiKey);
-        console.log("API_SECRET:", apiSecret ? "Exists ✅" : "Missing ❌");
-
         if (!cloudName || !apiKey || !apiSecret) {
             throw new Error("Missing Cloudinary environment variables");
         }
 
         // Fetch both images and videos
         const [imagesResponse, videosResponse] = await Promise.all([
-            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/image?type=upload&prefix=gallery/&context=true&max_results=500`, {
+            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/image?type=upload&prefix=gallery/&context=true&tags=true&max_results=500`, {
                 method: "GET",
                 headers: {
                     Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`,
                     "Content-Type": "application/json",
                 },
             }),
-            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/video?type=upload&prefix=gallery/&context=true&max_results=500`, {
+            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/video?type=upload&prefix=gallery/&context=true&tags=true&max_results=500`, {
                 method: "GET",
                 headers: {
                     Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`,
@@ -62,7 +57,8 @@ export async function GET() {
                     url: resource.secure_url,
                     title: title,
                     publicId: resource.public_id,
-                    resourceType: resource.resource_type || (resource.format ? 'video' : 'image')
+                    resourceType: resource.resource_type || (resource.format ? 'video' : 'image'),
+                    tags: Array.isArray(resource.tags) ? resource.tags : []
                 };
             });
         };
@@ -76,7 +72,10 @@ export async function GET() {
         ];
 
         return NextResponse.json({ 
-            images: allResources
+            images: allResources.map((resource) => ({
+                ...resource,
+                tags: resource.tags || []
+            }))
         });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch images from Cloudinary" }, { status: 500 });

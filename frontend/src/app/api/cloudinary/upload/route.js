@@ -7,6 +7,32 @@ import { join } from "path";
 import { tmpdir } from "os";
 import "dotenv/config";
 
+const normalizeTags = (input) => {
+    if (!input) {
+        return [];
+    }
+
+    const values = Array.isArray(input) ? input : [input];
+
+    const slugified = values
+        .flatMap((value) =>
+            value
+                ?.toString()
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter(Boolean) || []
+        )
+        .map((tag) =>
+            tag
+                .toLowerCase()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/\s+/g, "-")
+        )
+        .filter(Boolean);
+
+    return Array.from(new Set(slugified));
+};
+
 cloudinary.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -27,6 +53,7 @@ export async function POST(req) {
         const formData = await req.formData();
         const file = formData.get("file");
         const title = formData.get("title");
+        const tags = normalizeTags(formData.getAll("tags"));
 
         if (!file) {
             return NextResponse.json(
@@ -64,6 +91,10 @@ export async function POST(req) {
             resource_type: resourceType,
             folder: "gallery",
         };
+
+        if (tags.length) {
+            uploadOptions.tags = tags;
+        }
 
         if (resourceType === "video") {
             uploadOptions.eager = "mp4"; 
