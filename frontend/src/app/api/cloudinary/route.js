@@ -13,14 +13,14 @@ export async function GET() {
 
         // Fetch both images and videos
         const [imagesResponse, videosResponse] = await Promise.all([
-            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/image?type=upload&prefix=gallery/&context=true&max_results=500`, {
+            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/image?type=upload&prefix=gallery/&context=true&tags=true&max_results=500`, {
                 method: "GET",
                 headers: {
                     Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`,
                     "Content-Type": "application/json",
                 },
             }),
-            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/video?type=upload&prefix=gallery/&context=true&max_results=500`, {
+            fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/video?type=upload&prefix=gallery/&context=true&tags=true&max_results=500`, {
                 method: "GET",
                 headers: {
                     Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}`,
@@ -57,7 +57,8 @@ export async function GET() {
                     url: resource.secure_url,
                     title: title,
                     publicId: resource.public_id,
-                    resourceType: resource.resource_type || (resource.format ? 'video' : 'image')
+                    resourceType: resource.resource_type || (resource.format ? 'video' : 'image'),
+                    tags: Array.isArray(resource.tags) ? resource.tags : []
                 };
             });
         };

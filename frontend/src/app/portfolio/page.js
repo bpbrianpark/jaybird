@@ -21,7 +21,7 @@ export default function Portfolio() {
         <FadeInOnScroll direction="up" delay={0.4}>
           <section className="portfolio-gallery-section">
             <div className="portfolio-gallery-container">
-              <Gallery />
+              <Gallery enableTagFilter />
             </div>
           </section>
         </FadeInOnScroll>
