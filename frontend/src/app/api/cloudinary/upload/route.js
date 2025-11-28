@@ -60,9 +60,11 @@ export async function POST(req) {
         const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB
         const isLargeFile = fileSize > LARGE_FILE_THRESHOLD;
 
+        const tags = formData.get("tags")
         const uploadOptions = {
             resource_type: resourceType,
             folder: "gallery",
+            tags: tags ? tags.split(",") : []
         };
 
         if (resourceType === "video") {

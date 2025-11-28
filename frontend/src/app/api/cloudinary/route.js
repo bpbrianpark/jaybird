@@ -7,11 +7,6 @@ export async function GET() {
         const apiKey = process.env.CLOUDINARY_API_KEY;
         const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-        console.log("🛠️ Cloudinary Config:");
-        console.log("CLOUD_NAME:", cloudName);
-        console.log("API_KEY:", apiKey);
-        console.log("API_SECRET:", apiSecret ? "Exists ✅" : "Missing ❌");
-
         if (!cloudName || !apiKey || !apiSecret) {
             throw new Error("Missing Cloudinary environment variables");
         }
@@ -76,7 +71,10 @@ export async function GET() {
         ];
 
         return NextResponse.json({ 
-            images: allResources
+            images: allResources.map((resource) => ({
+                ...resource,
+                tags: resource.tags || []
+            }))
         });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch images from Cloudinary" }, { status: 500 });
