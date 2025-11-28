@@ -1,18 +1,16 @@
 "use client";
 import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
-import { X } from "lucide-react";
+import { X, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./gallery.css";
 import "./image-modal.css";
 
 const Gallery = ({ enableTagFilter = true }) => {
-    const [model, setModel] = useState(false);
-    const [tempImgSrc, setTempImgSrc] = useState(null);
-    const [tempImgTitle, setTempImgTitle] = useState(null);
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTag, setActiveTag] = useState("all");
+    const [expandedMedia, setExpandedMedia] = useState(null);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -77,28 +75,25 @@ const Gallery = ({ enableTagFilter = true }) => {
 
     const displayedImages = enableTagFilter ? filteredImages : images;
 
-    const getImg = (image) => {
-        let imageUrl;
-        let title;
-        
-        if (typeof image === 'string') {
-            imageUrl = image;
-            title = null;
-        } else {
-            imageUrl = image.url;
-            title = image.title;
+    const normalizeMedia = (media) => {
+        if (typeof media === "string") {
+            return {
+                url: media,
+                title: null,
+                tags: [],
+                isVideo: false,
+                resourceType: "image",
+            };
         }
+        return media;
+    };
 
-
-        setTempImgSrc(imageUrl);
-        setTempImgTitle(title);
-        setModel(true); 
+    const openMedia = (media) => {
+        setExpandedMedia(normalizeMedia(media));
     };
 
     const closeModal = () => {
-        setModel(false);
-        setTempImgSrc(null);
-        setTempImgTitle(null);
+        setExpandedMedia(null);
     };
 
     if (loading) {
@@ -115,7 +110,7 @@ const Gallery = ({ enableTagFilter = true }) => {
     return (
         <div className="gallery-container">
             <AnimatePresence>
-                {model && (
+                {expandedMedia && (
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -131,15 +126,30 @@ const Gallery = ({ enableTagFilter = true }) => {
                             className="image-modal-content"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            {tempImgSrc && (
+                            {expandedMedia && (
                                 <div className="image-modal-wrapper">
                                     <div className="image-modal-image-container">
-                                        <img
-                                            src={tempImgSrc}
-                                            alt={tempImgTitle || "Enlarged Image"}
-                                            className="image-modal-image"
-                                            style={{ display: 'block' }}
-                                        />
+                                        {expandedMedia.isVideo ? (
+                                            <video
+                                                src={expandedMedia.url}
+                                                className="image-modal-image"
+                                                controls
+                                                autoPlay
+                                                playsInline
+                                                poster={expandedMedia.thumbnailUrl || undefined}
+                                            >
+                                                Sorry, your browser doesn&#39;t support embedded videos.
+                                            </video>
+                                        ) : (
+                                            <Image
+                                                src={expandedMedia.url}
+                                                alt={expandedMedia.title || "Enlarged Media"}
+                                                width={expandedMedia.width || 1600}
+                                                height={expandedMedia.height || 1066}
+                                                className="image-modal-image"
+                                                sizes="(max-width: 768px) 100vw, 80vw"
+                                            />
+                                        )}
                                         <button 
                                             onClick={closeModal}
                                             className="image-modal-close"
@@ -148,9 +158,9 @@ const Gallery = ({ enableTagFilter = true }) => {
                                             <X className="image-modal-close-icon" />
                                         </button>
                                     </div>
-                                    {tempImgTitle && (
+                                    {expandedMedia.title && (
                                         <div className="image-modal-title">
-                                            <p>{tempImgTitle}</p>
+                                            <p>{expandedMedia.title}</p>
                                         </div>
                                     )}
                                 </div>
@@ -187,31 +197,54 @@ const Gallery = ({ enableTagFilter = true }) => {
             <div className="gallery-masonry">
                 {displayedImages.length > 0 ? (
                     displayedImages.map((image, index) => {
-                        const imgSrc = typeof image === 'string' ? image : image.url;
-                        const imgAlt = typeof image === 'string' ? `Wildlife photography ${index + 1}` : (image.title || `Wildlife photography ${index + 1}`);
+                        const media = normalizeMedia(image);
+                        const imgSrc = media.url;
+                        const imgAlt = media.title || `Wildlife capture ${index + 1}`;
                         const imageTags = typeof image === "object" && Array.isArray(image.tags) ? image.tags : [];
+                        const isVideo = !!media.isVideo || media.resourceType === "video";
+                        const poster = media.thumbnailUrl || undefined;
                         return (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                                onClick={() => getImg(image)}
+                                onClick={() => openMedia(image)}
                                 onMouseEnter={() => {
-                                    // Preload the full image when hovering
-                                    const preloadImg = new window.Image();
-                                    preloadImg.src = imgSrc;
+                                    if (!isVideo) {
+                                        const preloadImg = new window.Image();
+                                        preloadImg.src = imgSrc;
+                                    }
                                 }}
                                 className="gallery-item"
                             >
                                 <div className="gallery-image-container">
-                                    <Image
-                                        src={imgSrc}
-                                        width={400} 
-                                        height={600} 
-                                        alt={imgAlt}
-                                        className="gallery-image"
-                                    />
+                                    {isVideo ? (
+                                        <>
+                                            <video
+                                                src={imgSrc}
+                                                className="gallery-video"
+                                                playsInline
+                                                muted
+                                                preload="metadata"
+                                                poster={poster}
+                                            />
+                                            <div className="gallery-video-overlay" aria-hidden="true">
+                                                <Play className="gallery-video-icon" />
+                                                <span>Play video</span>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <Image
+                                            src={imgSrc}
+                                            width={media.width || 400}
+                                            height={media.height || 600}
+                                            alt={imgAlt}
+                                            className="gallery-image"
+                                            sizes="(max-width: 768px) 100vw, 33vw"
+                                            loading="lazy"
+                                        />
+                                    )}
                                     {enableTagFilter && imageTags.length > 0 && (
                                         <div className="gallery-image-meta">
                                             {imageTags.map((tag) => (

@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
 import "dotenv/config";
 
+const buildVideoThumbnailUrl = (cloudName, publicId) => {
+    if (!cloudName || !publicId) {
+        return null;
+    }
+
+    const safePublicId = publicId.replace(/^\/+/, "");
+    return `https://res.cloudinary.com/${cloudName}/video/upload/so_0/${safePublicId}.jpg`;
+};
+
 export async function GET() {
     try {
         const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -53,11 +62,23 @@ export async function GET() {
                         title = resource.context.title;
                     }
                 }
+                const resourceType = resource.resource_type || (resource.format ? 'video' : 'image');
+                const isVideo = resourceType === 'video';
+
+                const thumbnailUrl =
+                    resource.thumbnail_url ||
+                    (isVideo ? buildVideoThumbnailUrl(cloudName, resource.public_id) : resource.secure_url);
+
                 return {
                     url: resource.secure_url,
-                    title: title,
+                    thumbnailUrl,
+                    title,
                     publicId: resource.public_id,
-                    resourceType: resource.resource_type || (resource.format ? 'video' : 'image'),
+                    resourceType,
+                    isVideo,
+                    width: resource.width,
+                    height: resource.height,
+                    duration: isVideo ? resource.duration : undefined,
                     tags: Array.isArray(resource.tags) ? resource.tags : []
                 };
             });
