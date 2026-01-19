@@ -26,6 +26,8 @@ export default function DashboardContent() {
     const [visibleImages, setVisibleImages] = useState(50);
     const router = useRouter();
 
+    const uploadServiceUrl = process.env.NEXT_PUBLIC_UPLOAD_SERVICE_URL;
+
     useEffect(() => {
         fetchImages();
     }, []);
@@ -154,7 +156,7 @@ export default function DashboardContent() {
                     formData.append("tags", tags.join(","));
                 }
 
-                const response = await fetch('http://localhost:8080/api/v1/upload', {
+                const response = await fetch(uploadServiceUrl, {
                     method: 'POST',
                     body: formData, // FormData with file, title, tags
                   });
@@ -209,7 +211,7 @@ export default function DashboardContent() {
                             formData.append("tags", tags.join(","));
                         }
 
-                        const response = await fetch('http://localhost:8080/api/v1/upload', {
+                        const response = await fetch(uploadServiceUrl, {
                             method: 'POST',
                             body: formData, // FormData with file, title, tags
                           });
