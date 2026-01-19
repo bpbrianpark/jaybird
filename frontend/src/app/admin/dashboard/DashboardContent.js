@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Upload, CheckCircle, AlertCircle, Image as ImageIcon, LogOut, Maximize2, X, Trash2 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -22,7 +23,10 @@ export default function DashboardContent() {
     const [expandedImage, setExpandedImage] = useState(null);
     const [tagInput, setTagInput] = useState("");
     const [tags, setTags] = useState([]);
+    const [visibleImages, setVisibleImages] = useState(50);
     const router = useRouter();
+
+    const uploadServiceUrl = process.env.NEXT_PUBLIC_UPLOAD_SERVICE_URL;
 
     useEffect(() => {
         fetchImages();
@@ -37,6 +41,7 @@ export default function DashboardContent() {
             }
             const data = await res.json();
             setImages(data.images || []);
+            setVisibleImages(50);
         } catch (error) {
             console.error("Error fetching images:", error);
         } finally {
@@ -151,10 +156,10 @@ export default function DashboardContent() {
                     formData.append("tags", tags.join(","));
                 }
 
-                const response = await fetch("/api/cloudinary/upload", {
-                    method: "POST",
-                    body: formData,
-                });
+                const response = await fetch(uploadServiceUrl, {
+                    method: 'POST',
+                    body: formData, // FormData with file, title, tags
+                  });
 
                 const data = await response.json();
 
@@ -206,10 +211,10 @@ export default function DashboardContent() {
                             formData.append("tags", tags.join(","));
                         }
 
-                        const response = await fetch("/api/cloudinary/upload", {
-                            method: "POST",
-                            body: formData,
-                        });
+                        const response = await fetch(uploadServiceUrl, {
+                            method: 'POST',
+                            body: formData, // FormData with file, title, tags
+                          });
 
                         const data = await response.json();
 
@@ -252,8 +257,15 @@ export default function DashboardContent() {
         router.refresh();
     };
 
+    const getOptimizedImageUrl = (url, width = 500, height = 400) => {
+        if (!url || !url.includes('cloudinary.com')) {
+            return url;
+        }
+        return url.replace('/upload/', `/upload/w_${width},h_${height},c_fill,q_auto,f_auto/`);
+    };
+
     const handleDeleteImage = async (image, e) => {
-        e.stopPropagation(); // Prevent expanding the image when clicking delete
+        e.stopPropagation();
         
         if (!image.publicId) {
             setUploadError("Cannot delete: Image missing public ID");
@@ -276,7 +288,6 @@ export default function DashboardContent() {
                 throw new Error(data.error || "Failed to delete image");
             }
 
-            // Refresh the images list
             fetchImages();
         } catch (error) {
             console.error("Error deleting image:", error);
@@ -523,43 +534,65 @@ export default function DashboardContent() {
                             <p>No images uploaded yet</p>
                         </div>
                     ) : (
-                        <div className="admin-dashboard-images-grid">
-                            {images.map((image, index) => {
-                                const isVideo = image.resourceType === 'video' || image.url.match(/\.(mp4|webm|mov|avi)$/i);
-                                return (
-                                    <div key={index} className="admin-dashboard-image-card">
-                                        {isVideo ? (
-                                            <video
-                                                src={image.url}
-                                                className="admin-dashboard-image"
-                                                muted
-                                                playsInline
-                                            />
-                                        ) : (
-                                            <img
-                                                src={image.url}
-                                                alt={image.title || `Uploaded image ${index + 1}`}
-                                                className="admin-dashboard-image"
-                                            />
-                                        )}
-                                        <button
-                                            onClick={() => setExpandedImage(image)}
-                                            className="admin-dashboard-expand-button"
-                                            aria-label="Expand media"
-                                        >
-                                            <Maximize2 className="admin-dashboard-expand-icon" />
-                                        </button>
-                                        <button
-                                            onClick={(e) => handleDeleteImage(image, e)}
-                                            className="admin-dashboard-delete-button"
-                                            aria-label="Delete media"
-                                        >
-                                            <Trash2 className="admin-dashboard-delete-icon" />
-                                        </button>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                        <>
+                            <div className="admin-dashboard-images-grid">
+                                {images.slice(0, visibleImages).map((image, index) => {
+                                    const isVideo = image.resourceType === 'video' || image.url.match(/\.(mp4|webm|mov|avi)$/i);
+                                    const thumbnailUrl = isVideo && image.thumbnailUrl 
+                                        ? image.thumbnailUrl 
+                                        : getOptimizedImageUrl(image.url, 500, 400);
+                                    
+                                    return (
+                                        <div key={image.publicId || index} className="admin-dashboard-image-card">
+                                            {isVideo ? (
+                                                <video
+                                                    src={thumbnailUrl}
+                                                    className="admin-dashboard-image"
+                                                    muted
+                                                    playsInline
+                                                    preload="none"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src={thumbnailUrl}
+                                                    alt={image.title || `Uploaded image ${index + 1}`}
+                                                    width={250}
+                                                    height={200}
+                                                    className="admin-dashboard-image"
+                                                    loading="lazy"
+                                                    quality={75}
+                                                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 250px"
+                                                />
+                                            )}
+                                            <button
+                                                onClick={() => setExpandedImage(image)}
+                                                className="admin-dashboard-expand-button"
+                                                aria-label="Expand media"
+                                            >
+                                                <Maximize2 className="admin-dashboard-expand-icon" />
+                                            </button>
+                                            <button
+                                                onClick={(e) => handleDeleteImage(image, e)}
+                                                className="admin-dashboard-delete-button"
+                                                aria-label="Delete media"
+                                            >
+                                                <Trash2 className="admin-dashboard-delete-icon" />
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            {images.length > visibleImages && (
+                                <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+                                    <button
+                                        onClick={() => setVisibleImages(prev => prev + 50)}
+                                        className="admin-dashboard-load-more"
+                                    >
+                                        Load More ({images.length - visibleImages} remaining)
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                     {expandedImage && (
                         <div className="image-modal" style={{ zIndex: 1000 }} onClick={() => setExpandedImage(null)}>
