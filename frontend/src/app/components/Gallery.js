@@ -75,6 +75,13 @@ const Gallery = ({ enableTagFilter = true }) => {
 
     const displayedImages = enableTagFilter ? filteredImages : images;
 
+    const getOptimizedImageUrl = (url, width = 800, height = 1200) => {
+        if (!url || !url.includes('cloudinary.com')) {
+            return url;
+        }
+        return url.replace('/upload/', `/upload/w_${width},h_${height},c_fill,q_auto,f_auto/`);
+    };
+
     const normalizeMedia = (media) => {
         if (typeof media === "string") {
             return {
@@ -148,6 +155,8 @@ const Gallery = ({ enableTagFilter = true }) => {
                                                 height={expandedMedia.height || 1066}
                                                 className="image-modal-image"
                                                 sizes="(max-width: 768px) 100vw, 80vw"
+                                                quality={90}
+                                                priority
                                             />
                                         )}
                                         <button 
@@ -198,35 +207,31 @@ const Gallery = ({ enableTagFilter = true }) => {
                 {displayedImages.length > 0 ? (
                     displayedImages.map((image, index) => {
                         const media = normalizeMedia(image);
-                        const imgSrc = media.url;
+                        const isVideo = !!media.isVideo || media.resourceType === "video";
+                        const thumbnailUrl = isVideo && media.thumbnailUrl 
+                            ? media.thumbnailUrl 
+                            : getOptimizedImageUrl(media.url, 800, 1200);
                         const imgAlt = media.title || `Wildlife capture ${index + 1}`;
                         const imageTags = typeof image === "object" && Array.isArray(image.tags) ? image.tags : [];
-                        const isVideo = !!media.isVideo || media.resourceType === "video";
                         const poster = media.thumbnailUrl || undefined;
                         return (
                             <motion.div
-                                key={index}
+                                key={media.publicId || index}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 onClick={() => openMedia(image)}
-                                onMouseEnter={() => {
-                                    if (!isVideo) {
-                                        const preloadImg = new window.Image();
-                                        preloadImg.src = imgSrc;
-                                    }
-                                }}
                                 className="gallery-item"
                             >
                                 <div className="gallery-image-container">
                                     {isVideo ? (
                                         <>
                                             <video
-                                                src={imgSrc}
+                                                src={thumbnailUrl}
                                                 className="gallery-video"
                                                 playsInline
                                                 muted
-                                                preload="metadata"
+                                                preload="none"
                                                 poster={poster}
                                             />
                                             <div className="gallery-video-overlay" aria-hidden="true">
@@ -236,13 +241,14 @@ const Gallery = ({ enableTagFilter = true }) => {
                                         </>
                                     ) : (
                                         <Image
-                                            src={imgSrc}
+                                            src={thumbnailUrl}
                                             width={media.width || 400}
                                             height={media.height || 600}
                                             alt={imgAlt}
                                             className="gallery-image"
-                                            sizes="(max-width: 768px) 100vw, 33vw"
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                                             loading="lazy"
+                                            quality={80}
                                         />
                                     )}
                                     {enableTagFilter && imageTags.length > 0 && (
