@@ -18,6 +18,14 @@ nowrap;">
 alt="Jason Park Photography Logo">
 </div>
 
+### Screenshots
+
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <img src="frontend/public/portfolio.png" alt="Portfolio page" width="400">
+  <img src="frontend/public/contact.png" alt="Contact page" width="400">
+  <img src="frontend/public/dashboard.png" alt="Admin Dashboard" width="400">
+</div>
+
 ## Features
 
 The site includes a portfolio gallery with search functionality, a contact form that sends emails via Nodemailer, and an admin dashboard where authenticated users can upload and manage images through Cloudinary integration.
