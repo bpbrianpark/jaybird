@@ -18,8 +18,6 @@ nowrap;">
 alt="Jason Park Photography Logo">
 </div>
 
-### Screenshots
-
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img src="frontend/public/portfolio.png" alt="Portfolio page" width="400">
   <img src="frontend/public/contact.png" alt="Contact page" width="400">
